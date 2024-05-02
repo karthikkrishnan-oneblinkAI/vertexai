@@ -3,6 +3,17 @@ from vertexai.generative_models import GenerativeModel, ChatSession
 from vertexai.language_models import TextEmbeddingModel, TextEmbeddingInput
 from typing import List
 
+import requests
+
+def get_project_id():
+    url = "http://metadata.google.internal/computeMetadata/v1/project/project-id"
+    headers = {"Metadata-Flavor": "Google"}
+    response = requests.get(url, headers=headers)
+    return response.text
+
+project_id = get_project_id()
+
+
 class VertexAISmokeTester:
     def __init__(self, project_id: str, location: str = 'us-central1'):
         self.project_id = project_id
@@ -28,7 +39,7 @@ class VertexAISmokeTester:
 if __name__ == "__main__":
     #project_id = "precious-sky-23422"  # Update with your project ID
     # take input
-    project_id = input("Enter your project ID: ") or "precious-sky-23422"
+    project_id = get_project_id()
     tester = VertexAISmokeTester(project_id=project_id)
 
     # Test Chat Response
@@ -39,4 +50,4 @@ if __name__ == "__main__":
     # Test Creating Embeddings
     texts = ["Hello, how are you?", "Weather is great today!"]
     embeddings = tester.create_embeddings(texts, "RETRIEVAL_DOCUMENT", "textembedding-gecko@003")
-    print("Embeddings:", embeddings)
+    print(f"Embeddings: {embeddings}")
