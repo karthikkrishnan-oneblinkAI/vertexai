@@ -6,12 +6,15 @@ from typing import List
 import requests
 
 def get_project_id():
-    url = "http://metadata.google.internal/computeMetadata/v1/project/project-id"
-    headers = {"Metadata-Flavor": "Google"}
-    response = requests.get(url, headers=headers)
-    return response.text
-
-project_id = get_project_id()
+    try:
+        url = "http://metadata.google.internal/computeMetadata/v1/project/project-id"
+        headers = {"Metadata-Flavor": "Google"}
+        response = requests.get(url, headers=headers)
+        return response.text
+    except Exception as e:
+        print("Error getting project ID. May be not on GCP VM?")
+        project_id = input("Enter the Google Cloud project ID: ")
+        return project_id
 
 
 class VertexAISmokeTester:
